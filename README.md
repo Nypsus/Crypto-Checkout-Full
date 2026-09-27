@@ -1,8 +1,12 @@
-# Crypto-Checkout-Full — le système de paiement complet (labo)
+# Crypto-Checkout-Full — le système de paiement complet (en ligne)
 
 Variante **complète / R&D** du système de paiement crypto non-custodial.
 La version stable (celle déjà en ligne) reste **Crypto-Checkout** — ici on
 construit les briques « full » sans toucher à la prod.
+
+**EN LIGNE : https://nypsus.github.io/Crypto-Checkout-Full/**
+(repo public, GitHub Pages — build auto à chaque push sur `main`)
+— `/` checkout · `/delivery.html` livraison vérifiée · `/admin.html` paramètres.
 
 ## Ce qu'il y a en plus vs Crypto-Checkout
 
@@ -35,7 +39,8 @@ Tout est dans `config.js` :
 - `readRpcs` : RPC publics de lecture (rotation automatique).
 - `products.<id>.deliveryUrl` / `deliveryText` : ce qui est révélé après
   paiement vérifié (`deliveryUrl` = lien vers ta page d'accès ; `deliveryText`
-  = code/instructions en texte).
+  = code/instructions en texte). `product1` est déjà branché sur la page
+  Delivrance existante ; `product2`/`product3` restent à renseigner.
 - `successRedirect` : redirection après paiement (le hash de transaction est
   transmis automatiquement en `&tx=…` pour que la page cible puisse vérifier).
 
@@ -43,7 +48,7 @@ Tout est dans `config.js` :
 
 1. Ouvrir [Remix](https://remix.ethereum.org), coller `contract/CheckoutV2.sol`.
 2. Compiler (Solidity 0.8.x), déployer sur **BNB Smart Chain mainnet** avec
-   ton wallet propriétaire.
+   ton wallet propriétaire (ou sur le testnet BSC d'abord, gratuit).
 3. Dans le contrat déployé : `setProductPrice('product1', …)` pour le prix BNB,
    puis `setProductPriceInToken('product1', USDT, …)` pour le prix USDT.
    (USDT BSC : `0x55d398326f99059fF775485246999027B3197955`.)
@@ -72,4 +77,5 @@ La page de livraison se teste avec une transaction réelle du contrat :
 ## Repos
 
 - `Nypsus/Crypto-Checkout` — **prod** (stable, en ligne, ne pas casser).
-- `Nypsus/Crypto-Checkout-Full` — **ce repo** (labo des briques complètes).
+- `Nypsus/Crypto-Checkout-Full` — **ce repo** (labo des briques complètes,
+  en ligne sur GitHub Pages).

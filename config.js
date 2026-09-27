@@ -52,7 +52,7 @@ window.CHECKOUT_CONFIG = {
   //                on-chain (la page de contenu / d'accès).
   // deliveryText : alternative en texte (code d'accès, instructions…).
   products: {
-    product1: { name: 'Indicateur Daily',  description: 'Accès à l’indicateur Daily — Les Indicateurs à Levier', deliveryUrl: '', deliveryText: '' },
+    product1: { name: 'Indicateur Daily',  description: 'Accès à l’indicateur Daily — Les Indicateurs à Levier', deliveryUrl: 'https://nypsus.github.io/Front-end-indicateur/Delivrance_IndicateurD.html', deliveryText: '' },
     product2: { name: 'Indicateur 4h/1h',  description: 'Accès à l’indicateur 4h/1h — Les Indicateurs à Levier', deliveryUrl: '', deliveryText: '' },
     product3: { name: 'Indicateur 15mn',   description: 'Accès à l’indicateur 15mn — Les Indicateurs à Levier',  deliveryUrl: '', deliveryText: '' }
   },
