@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paiement crypto</title>
+<meta name="description" content="Paiement crypto sécurisé — aucun montant ni adresse à saisir.">
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#0b0d12; --card:#12151d; --line:#232a38; --txt:#e8ecf4; --muted:#8b94a7; --acc:#f0b90b; --ok:#22c55e; --err:#ef4444; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         background:radial-gradient(1200px 600px at 50% -10%, #171d2b 0%, var(--bg) 55%);
+         color:var(--txt); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif; padding:24px; }
+  .card { width:100%; max-width:440px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .brand { font-weight:600; letter-spacing:.2px; }
+  .chip { font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 10px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .desc { color:var(--muted); margin:0 0 16px; font-size:14px; }
+  .price { font-size:32px; font-weight:700; margin:6px 0 2px; }
+  .price small { font-size:14px; color:var(--muted); font-weight:400; margin-left:8px; }
+  .usd { color:var(--muted); font-size:13px; margin-bottom:16px; min-height:18px; }
+  .toggle { display:flex; gap:8px; margin:16px 0; }
+  .toggle button { flex:1; padding:10px 12px; background:#0f131b; color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer; font-size:14px; }
+  .toggle button.on { border-color:var(--acc); color:var(--txt); background:#161a24; }
+  .toggle button:disabled { opacity:.4; cursor:not-allowed; }
+  #pay { width:100%; padding:14px; border:0; border-radius:12px; background:var(--acc); color:#151515; font-size:16px; font-weight:700; cursor:pointer; }
+  #pay:disabled { opacity:.55; cursor:not-allowed; }
+  .notice { margin-top:12px; padding:10px 12px; border:1px dashed var(--line); border-radius:10px; font-size:12.5px; color:var(--muted); line-height:1.55; }
+  .notice strong { color:var(--txt); }
+  .qrbox { margin-top:16px; text-align:center; }
+  .qrbox .qr-hint { font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5; }
+  #qr-canvas { display:inline-block; background:#fff; padding:8px; border-radius:10px; line-height:0; }
+  .status { margin-top:14px; font-size:13px; color:var(--muted); min-height:18px; word-break:break-word; }
+  .status.ok { color:var(--ok); } .status.err { color:var(--err); }
+  a { color:var(--acc); text-decoration:none; }
+  .ok-link { display:inline-block; padding:12px 16px; background:var(--acc); color:#151515; border-radius:10px; font-weight:700; margin:6px 0; }
+  footer { margin-top:22px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.6; }
+  .list button { width:100%; text-align:left; margin-bottom:8px; padding:12px; background:#0f131b; border:1px solid var(--line); border-radius:10px; color:var(--txt); cursor:pointer; font-size:14px; }
+  .list button:hover { border-color:var(--acc); }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <header><span class="brand" id="brand">Paiement crypto</span><span class="chip" id="chip">BSC</span></header>
+
+  <div id="view-loading" class="desc">Chargement du produit…</div>
+
+  <div id="view-list" class="hide">
+    <h1>Choisir un produit</h1>
+    <div class="list" id="product-list"></div>
+  </div>
+
+  <div id="view-product" class="hide">
+    <h1 id="p-name">—</h1>
+    <p class="desc" id="p-desc"></p>
+    <div class="price"><span id="p-price">—</span><small id="p-unit">BNB</small></div>
+    <div class="usd" id="p-usd"></div>
+    <div class="toggle" id="unit-toggle">
+      <button data-unit="BNB" id="btn-bnb" class="on">Payer en BNB</button>
+      <button data-unit="USDT" id="btn-usdt" disabled>Payer en USDT</button>
+    </div>
+    <button id="pay" disabled>Payer</button>
+    <div class="notice">
+      <strong>Ce qui va se passer :</strong> ton wallet va s'ouvrir et te demander de confirmer
+      (parfois 2 étapes pour l'USDT). Vérifie que le destinataire est bien le contrat affiché
+      en bas, puis clique « Confirmer ». Rien à recopier, aucun montant à saisir.
+    </div>
+    <div class="qrbox hide" id="qr-box">
+      <div id="qr-canvas"></div>
+      <div class="qr-hint">📱 Payer depuis ton téléphone : scanne ce code avec ton appareil photo<br>(le paiement s'ouvre sur mobile, montant et adresse déjà remplis)</div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div id="view-success" class="hide">
+    <h1>Paiement confirmé ✓</h1>
+    <p class="desc">Merci ! La transaction est validée sur la blockchain.</p>
+    <p class="desc"><a id="ok-tx" href="#" target="_blank" rel="noopener">Voir la transaction sur BscScan</a></p>
+    <p class="desc"><a id="ok-delivery" class="ok-link hide" href="#">Accéder à ma livraison →</a></p>
+    <p class="desc" id="ok-redirect"></p>
+  </div>
+
+  <footer>
+    <div>Contrat : <a id="contract-link" href="#" target="_blank" rel="noopener">—</a> · vérifié sur BscScan</div>
+    <div>Paiement décentralisé : les fonds vont directement au contrat. Aucun compte requis.</div>
+    <div>Livraison vérifiée automatiquement on-chain (event PaymentReceived).</div>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

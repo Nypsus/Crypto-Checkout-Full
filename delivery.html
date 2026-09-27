@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livraison — Paiement crypto</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#0b0d12; --card:#12151d; --line:#232a38; --txt:#e8ecf4; --muted:#8b94a7; --acc:#f0b90b; --ok:#22c55e; --err:#ef4444; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         background:radial-gradient(1200px 600px at 50% -10%, #171d2b 0%, var(--bg) 55%);
+         color:var(--txt); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif; padding:24px; }
+  .card { width:100%; max-width:440px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .brand { font-weight:600; letter-spacing:.2px; }
+  .chip { font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 10px; }
+  h1 { font-size:20px; margin:0 0 8px; }
+  .desc { color:var(--muted); margin:0 0 12px; font-size:14px; }
+  .ok-link { display:inline-block; padding:12px 16px; background:var(--acc); color:#151515; border-radius:10px; font-weight:700; text-decoration:none; margin:6px 0; }
+  #btn-wallet { margin-top:12px; padding:10px 12px; background:#0f131b; color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer; font-size:13px; }
+  .status { margin-top:10px; font-size:13px; min-height:18px; word-break:break-word; color:var(--muted); }
+  .status.ok { color:var(--ok); } .status.err { color:var(--err); }
+  a { color:var(--acc); text-decoration:none; }
+  footer { margin-top:22px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.6; }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <header><span class="brand" id="brand">Paiement crypto</span><span class="chip">Livraison vérifiée</span></header>
+
+  <div id="st-loading" class="desc">⏳ Vérification du paiement sur la blockchain…</div>
+
+  <div id="st-ok" class="hide">
+    <h1>Paiement vérifié ✓</h1>
+    <p class="desc" id="ok-sum">—</p>
+    <div id="ok-deliver"></div>
+    <button id="btn-wallet" class="hide">Vérifier que c'est bien mon wallet</button>
+    <div class="status" id="ok-walletcheck"></div>
+  </div>
+
+  <div id="st-fail" class="hide">
+    <h1>Vérification impossible</h1>
+    <p class="desc" id="fail-msg"></p>
+    <p class="desc">Si tu viens juste de payer, attends quelques secondes puis recharge la page. Sinon, contacte le support en indiquant le numéro de ta transaction.</p>
+  </div>
+
+  <footer>
+    <div>Contrat : <a id="contract-link" href="#" target="_blank" rel="noopener">—</a></div>
+    <div>Contrôle automatique du paiement on-chain (event PaymentReceived) — rien à recopier, rien à prouver à la main.</div>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="delivery.js"></script>
+</body>
+</html>

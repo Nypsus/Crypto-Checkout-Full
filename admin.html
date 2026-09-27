@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Admin — Checkout crypto</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#0b0d12; --card:#12151d; --line:#232a38; --txt:#e8ecf4; --muted:#8b94a7; --acc:#f0b90b; --ok:#22c55e; --err:#ef4444; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; background:radial-gradient(1200px 600px at 50% -10%, #171d2b 0%, var(--bg) 55%);
+         color:var(--txt); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif; padding:24px; }
+  .card { width:100%; max-width:760px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+  .brand { font-weight:600; }
+  h2 { font-size:16px; margin:22px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .muted.ok { color:var(--ok); }
+  .err { color:var(--err); }
+  .row { display:flex; gap:8px; margin:8px 0; flex-wrap:wrap; align-items:center; }
+  .row input { flex:1; min-width:150px; padding:9px 10px; background:#0f131b; color:var(--txt); border:1px solid var(--line); border-radius:8px; font-size:14px; }
+  button { padding:9px 14px; background:var(--acc); color:#151515; border:0; border-radius:8px; font-weight:600; cursor:pointer; font-size:13.5px; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button.ghost { background:#0f131b; color:var(--txt); border:1px solid var(--line); margin-right:8px; font-weight:500; }
+  .prod { padding:12px; border:1px solid var(--line); border-radius:10px; margin-bottom:10px; }
+  .prod-head { font-size:14px; margin-bottom:4px; }
+  .status { margin-top:14px; font-size:13px; color:var(--muted); min-height:18px; word-break:break-word; }
+  .status.ok { color:var(--ok); } .status.err { color:var(--err); }
+  a { color:var(--acc); text-decoration:none; }
+  code { background:#0f131b; padding:1px 6px; border-radius:6px; font-size:13px; word-break:break-all; }
+  footer { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.6; }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <span class="brand">⚙️ Admin — Checkout crypto</span>
+    <span>
+      <button id="reload" class="ghost">↻ Recharger</button>
+      <button id="connect">Connecter le wallet</button>
+    </span>
+  </header>
+  <div id="who" class="muted">Lecture seule — connecte le wallet propriétaire pour modifier.</div>
+
+  <h2>Produits &amp; prix</h2>
+  <div id="products"></div>
+  <div class="row">
+    <input id="new-id" placeholder="identifiant du nouveau produit (ex. pack-3)">
+    <input id="new-price" placeholder="prix en BNB (ex. 0.5)">
+    <button id="add" disabled>Ajouter</button>
+  </div>
+
+  <h2>Retraits</h2>
+  <div>Solde BNB du contrat : <b id="balance">—</b></div>
+  <div class="row"><button id="withdraw" disabled>Retirer tout le BNB</button></div>
+
+  <div id="sec-v2" class="hide">
+    <h2>Options CheckoutV2</h2>
+    <div>Adresse de retrait (payout) : <code id="payout">—</code></div>
+    <div class="row">
+      <input id="new-payout" placeholder="0x… nouvelle adresse de retrait">
+      <button id="set-payout" disabled>Changer</button>
+    </div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <footer>
+    Les noms / descriptions se règlent dans <code>config.js</code>. Cette page est publique, mais
+    la blockchain n'accepte les modifications que de l'adresse propriétaire du contrat : chaque
+    action est signée par ton wallet, aucune clé privée n'est stockée ici.
+  </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
